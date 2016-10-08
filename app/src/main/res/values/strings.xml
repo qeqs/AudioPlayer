@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">AudioPlayer</string>
+    <string name="title_activity_about">About application</string>
+
+    <string name="text_activity_about"><h1><b>Аудиоплеер v.0.1</b></h1>\n
+    Авторы:\n
+        Лыгин Вадим\n
+        Милованова Анастасия
+
+    </string>
+    <string name="action_settings">Settings</string>
 </resources>
