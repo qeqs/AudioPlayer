@@ -47,4 +47,13 @@
         android:layout_marginBottom="52dp"
         android:id="@+id/playButton"
         app:backgroundTint="@android:color/holo_green_dark" />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:id="@+id/trackInfo"
+        android:text="Info"
+        android:layout_width="wrap_content"
+        android:layout_above="@+id/seekBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
