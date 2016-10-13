@@ -3,6 +3,7 @@ package com.vl.audioplayer;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,13 +57,14 @@ public class MusicSearcher {
                 return false;
             }
         }
-
+        String mask1;
         public List find(String startPath, String mask)
                 throws Exception {
             //проверка параметров
             if(startPath == null || mask == null) {
                 throw new Exception("Ошибка: не заданы параметры поиска");
             }
+            mask1 = mask;
             File topDirectory = new File(startPath);
             if(!topDirectory.exists()) {
                 throw new Exception("Ошибка: указанный путь не существует");
@@ -96,7 +98,10 @@ public class MusicSearcher {
         */
         private void search(File topDirectory, List res) {
             //получаем список всех объектов в текущей директории
+            if(topDirectory==null)return;
+
             File[] list = topDirectory.listFiles();
+            if(list==null)return;
             //просматриваем все объекты по-очереди
             for(int i = 0; i < list.length; i++) {
                 //если это директория (папка)...
@@ -107,7 +112,8 @@ public class MusicSearcher {
                 //если это файл
                 else {
                     //...выполняем проверку на соответствие регулярному выражению...
-                    if(accept(list[i].getName())) {
+                    if(list[i].getAbsolutePath().endsWith(mask1))//(accept(list[i].getAbsolutePath()))
+                    {
                         //...добавляем текущий объект в список результатов,
                         //и обновляем значения счетчиков
                         filesNumber++;
@@ -117,6 +123,10 @@ public class MusicSearcher {
                 }
             }
         }
+    public static String getExternalSdCardPath() {
+        return "/mnt/sdcard";//System.getenv("EXTERNAL_STORAGE");
+    }
+
 
 
 }

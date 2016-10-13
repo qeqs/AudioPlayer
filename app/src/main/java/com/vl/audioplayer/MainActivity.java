@@ -7,19 +7,65 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    MusicPlayer player;
+    ArrayList tracks;
+    boolean is_playing = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton button = (FloatingActionButton) findViewById(R.id.menuButton);
+        FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menuButton);
+        final FloatingActionButton playButton = (FloatingActionButton) findViewById(R.id.playButton);
+
+        player = new MusicPlayer(getSystemService(Context.AUDIO_SERVICE));
+
+        MusicSearcher searcher = new MusicSearcher();
+        try {
+            tracks =(ArrayList)searcher.find(MusicSearcher.getExternalSdCardPath(),"mp3");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        menuButton.setOnClickListener(viewClickListener);
+        ///TODO: вынести отдельно
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                switch (v.getId()) {
+                    case R.id.playButton:
+                        if (player.isPlaying()) {
+                            playButton.setImageResource(android.R.drawable.ic_media_play);
+                            player.pause();
+                        }
+                        else {
+                            playButton.setImageResource(android.R.drawable.ic_media_pause);
+                            try {
+                                if(!player.continuePlay())
+                                        player.play(tracks.get(0).toString());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
 
 
-        button.setOnClickListener(viewClickListener);
+                }
+                ((TextView)findViewById(R.id.trackInfo)).setText("Time " + player.getCurrentPosition() + " / "
+                        + player.getDuration());
+            }
+        });
+
     }
 
     View.OnClickListener viewClickListener = new View.OnClickListener() {
