@@ -1,12 +1,14 @@
 package com.vl.audioplayer;
 
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
@@ -18,14 +20,16 @@ public class MainActivity extends AppCompatActivity {
 
     MusicPlayer player;
     ArrayList tracks;
+    FloatingActionButton playButton;
+    FloatingActionButton menuButton;
     boolean is_playing = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menuButton);
-        final FloatingActionButton playButton = (FloatingActionButton) findViewById(R.id.playButton);
+        menuButton = (FloatingActionButton) findViewById(R.id.menuButton);
+        playButton = (FloatingActionButton) findViewById(R.id.playButton);
 
         player = new MusicPlayer(getSystemService(Context.AUDIO_SERVICE));
 
@@ -36,39 +40,37 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        menuButton.setOnClickListener(viewClickListener);
-        ///TODO: вынести отдельно
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                switch (v.getId()) {
-                    case R.id.playButton:
-                        if (player.isPlaying()) {
-                            playButton.setImageResource(android.R.drawable.ic_media_play);
-                            player.pause();
-                        }
-                        else {
-                            playButton.setImageResource(android.R.drawable.ic_media_pause);
-                            try {
-                                if(!player.continuePlay())
-                                        player.play(tracks.get(0).toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        break;
-
-
-                }
-                ((TextView)findViewById(R.id.trackInfo)).setText("Time " + player.getCurrentPosition() + " / "
-                        + player.getDuration());
-            }
-        });
+        menuButton.setOnClickListener(viewMenuClickListener);
+        playButton.setOnClickListener(viewPlayerClickListener);
 
     }
+    View.OnClickListener viewPlayerClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
-    View.OnClickListener viewClickListener = new View.OnClickListener() {
+            switch (v.getId()) {
+                case R.id.playButton:
+                    if (player.isPlaying()) {
+                        playButton.setImageResource(android.R.drawable.ic_media_play);
+                        player.pause();
+                    }
+                    else {
+                        playButton.setImageResource(android.R.drawable.ic_media_pause);
+                        try {
+                            if(!player.continuePlay())
+                                player.play(tracks.get(0).toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+
+
+            }
+
+        }
+    };
+    View.OnClickListener viewMenuClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             showPopupMenu(v);
@@ -82,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         popupMenu
                 .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
@@ -103,5 +104,29 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         popupMenu.show();
+    }
+    private class MyTimer extends CountDownTimer
+    {
+
+        public MyTimer(long millisInFuture, long countDownInterval)
+        {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            // что-то тут буду делать, пока не придумал что
+        }
+
+        public void onTick(long millisUntilFinished)
+        {
+            SeekBar bar = ((SeekBar)findViewById(R.id.seekBar));
+            bar.setMax(player.getDuration());
+            bar.setProgress(player.getCurrentPosition());
+            ((TextView)findViewById(R.id.trackInfo)).setText("Time " + player.getCurrentPosition()/60+":"+player.getCurrentPosition()%60 + " / "
+                    + player.getDuration()/60+":"+player.getDuration()%60);
+        }
+
     }
 }

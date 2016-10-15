@@ -14,19 +14,14 @@ import static android.content.Context.AUDIO_SERVICE;
  */
 
 public class MusicPlayer {
-    private final String DATA_STREAM ="https://top-fwz1.mail.ru/tracker?js=13;id=650785;e=RT/beat;sid=fe1d288b;ids=650785;ver=60;_=0.6539773291352935"; //"http://online.radiorecord.ru:8101/rr_128";
-    private MediaPlayer mediaPlayer;
+  private MediaPlayer mediaPlayer;
     private AudioManager am;
 
     public MusicPlayer(Object player){
         am = (AudioManager) player;
 
     }
-    public void testPlay() throws IOException {
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setDataSource(DATA_STREAM);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-    }
+
     public void play(String source) throws IOException {
         releaseMP();
         mediaPlayer = new MediaPlayer();
@@ -56,10 +51,12 @@ public class MusicPlayer {
         return true;
     }
     public int getCurrentPosition(){
-        return mediaPlayer.getCurrentPosition();
+        if(mediaPlayer==null)return 0;
+        return mediaPlayer.getCurrentPosition()/1000;
     }
     public int getDuration(){
-        return  mediaPlayer.getDuration();
+        if(mediaPlayer==null)return 0;
+        return  mediaPlayer.getDuration()/1000;
     }
 
     private void releaseMP() {
