@@ -124,7 +124,7 @@ public class MusicSearcher {
             }
         }
     public static String getExternalSdCardPath() {
-        return "/mnt/sdcard";//System.getenv("EXTERNAL_STORAGE");
+        return System.getenv("EXTERNAL_STORAGE");
     }
 
 
