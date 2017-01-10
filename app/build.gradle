@@ -20,7 +20,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    // https://mvnrepository.com/artifact/com.j256.ormlite/ormlite-android
+    compile group: 'com.j256.ormlite', name: 'ormlite-android', version: '4.48'
+
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

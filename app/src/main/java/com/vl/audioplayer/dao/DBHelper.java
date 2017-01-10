@@ -1,12 +1,9 @@
-package com.vl.audioplayer;
+package com.vl.audioplayer.dao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by kvakin on 09.10.2016.
- */
 
 public class DBHelper extends SQLiteOpenHelper {
     //TODO:create table string

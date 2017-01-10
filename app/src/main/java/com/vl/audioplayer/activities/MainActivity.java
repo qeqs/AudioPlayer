@@ -1,4 +1,4 @@
-package com.vl.audioplayer;
+package com.vl.audioplayer.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.vl.audioplayer.service.MusicPlayer;
+import com.vl.audioplayer.service.MusicSearcher;
+import com.vl.audioplayer.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(viewPlayerClickListener);
         nextButton.setOnClickListener(viewPlayerClickListener);
         prevButton.setOnClickListener(viewPlayerClickListener);
+
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -78,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     View.OnClickListener viewPlayerClickListener = new View.OnClickListener() {
+
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -179,5 +185,14 @@ public class MainActivity extends AppCompatActivity {
                     + player.getDuration()/60+":"+player.getDuration()%60);
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        moveTaskToBack(true);
+
+        super.onDestroy();
+        System.runFinalizersOnExit(true);
+        System.exit(0);
     }
 }

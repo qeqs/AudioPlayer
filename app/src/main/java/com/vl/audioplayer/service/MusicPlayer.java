@@ -1,7 +1,9 @@
-package com.vl.audioplayer;
+package com.vl.audioplayer.service;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+
+import com.vl.audioplayer.activities.MainActivity;
 
 import java.io.File;
 import java.io.IOException;

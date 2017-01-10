@@ -1,4 +1,4 @@
-package com.vl.audioplayer;
+package com.vl.audioplayer.service;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -7,9 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-/**
- * Created by kvakin on 10.10.2016.
- */
+
 
 public class MusicSearcher {
 
