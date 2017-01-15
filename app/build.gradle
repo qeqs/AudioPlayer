@@ -1,10 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.vl.audioplayer"
+        applicationId 'qeqs.audioplayer'
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1
@@ -17,12 +19,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
     // https://mvnrepository.com/artifact/com.j256.ormlite/ormlite-android
-    compile group: 'com.j256.ormlite', name: 'ormlite-android', version: '4.48'
-
+    compile 'com.j256.ormlite:ormlite-android:4.48'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

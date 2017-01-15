@@ -1,111 +1,136 @@
 package com.vl.audioplayer.service;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 
-import com.vl.audioplayer.activities.MainActivity;
+import com.vl.audioplayer.entities.Track;
+import com.vl.audioplayer.entities.PlayList;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by kvakin on 13.10.2016.
- */
 
 public class MusicPlayer {
-  private MediaPlayer mediaPlayer;
-    private AudioManager am;
-    private ArrayList playList;
-    private String curTrackName;
-    private boolean ready = false;
-    public MusicPlayer(Object player,ArrayList tracks){
-        am = (AudioManager) player;
+    private Context context;
+    private ArrayList<PlayerListener> listeners = new ArrayList<>();
+    private Integer indexCurrentTrack = 0;
+    private MediaPlayer player;
+    private PlayList currentPlayList;
+    private boolean isPaused = true;
 
-        this.playList = tracks;
-        mediaPlayer = new MediaPlayer();
+    public MusicPlayer(Context context){
+        this.context = context;
+    }
+    public void addListener(PlayerListener listener){
+        listeners.add(listener);
+    }
+
+    private void createPlayer(Context context, String path) throws IOException {
+
+        if(player!=null)player.release();
+        player = MediaPlayer.create(context, Uri.fromFile(new File(path)));
+
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if(mp==null)return;
+                mp.release();
+                player = new MediaPlayer();
+                play(++indexCurrentTrack);
+                for (PlayerListener listener :
+                        listeners) {
+                    listener.onEoF(indexCurrentTrack);
+                }
+            }
+        });
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    }
+
+
+    public void pause()
+    {
+        setPaused(true);
+        player.pause();
+    }
+    public void play() {
+        if (getDuration() <= 0)
+            play(indexCurrentTrack);
+        if (isPaused) {
+            player.start();
+            setPaused(false);
+        }
+    }
+    public void play(Integer i) {
+
+        indexCurrentTrack = i;
+        if (currentPlayList.getTracks().size() == 0) return;
+        if (currentPlayList.getTracks().size() <= i) i = 0;
+        if (i < 0) i = currentPlayList.getTracks().size() - 1;
 
         try {
-            mediaPlayer.setDataSource(playList.get(MainActivity.index).toString());
+            createPlayer(context,currentPlayList.getTracks().get(i).getPath());
+            player.start();
+            setPaused(false);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mediaPlayer.setOnCompletionListener(onStop);
-
     }
-    MediaPlayer.OnCompletionListener onStop =  new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            if(!ready){return;}
-            try {
-                    play(++MainActivity.index,false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void next(){
+        play(++indexCurrentTrack);
+        for (PlayerListener listener :
+                listeners) {
+            listener.onEoF(indexCurrentTrack);
         }
-    };
-    public void setPlayList(ArrayList tracks){
-
-        this.playList = tracks;
     }
-    public void setReady(){
-        ready = !ready;
-    }
-    public boolean getReady(){
-        return ready;
-    }
-    public void play(int i,boolean is_continue) throws IOException {
-
-        if (!is_continue) {
-            releaseMP();
-
-            if (i >= playList.size()) i = (MainActivity.index = 0);
-            if (i < 0) i = (MainActivity.index = playList.size() - 1);
-            if (playList.size() > 0) {
-                mediaPlayer.setDataSource(playList.get(i).toString());
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-                curTrackName = ((File) playList.get(i)).getName();
-            }
-        } else mediaPlayer.start();
-    }
-    public void pause(){
-        mediaPlayer.pause();
-    }
-    public boolean isPlaying(){
-        return mediaPlayer.isPlaying();
-
+    public void prev(){
+        play(--indexCurrentTrack);
+        for (PlayerListener listener :
+                listeners) {
+            listener.onEoF(indexCurrentTrack);
+        }
     }
 
     public int getCurrentPosition(){
-        return mediaPlayer.getCurrentPosition()/1000;
+        return player.getCurrentPosition()/1000;
     }
     public void setCurrentPosition(int pos){
-        mediaPlayer.seekTo(pos*1000);
+        player.seekTo(pos*1000);
     }
     public int getDuration(){
-        return  mediaPlayer.getDuration()/1000;
+        return  player.getDuration()/1000;
     }
-    private void releaseMP() {
-        if (mediaPlayer != null) {
-            try {
-                mediaPlayer.release();
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setOnCompletionListener(onStop);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+    public PlayList getCurrentPlayList() {
+        return currentPlayList;
+    }
+
+    public void setCurrentPlayList(PlayList currentPlayList) {
+        this.currentPlayList = currentPlayList;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    private void setPaused(boolean paused) {
+        isPaused = paused;
+        for (PlayerListener listener :
+                listeners) {
+            listener.onIsPausedChanged(paused);
         }
     }
-
-    public String getCurTrackName() {
-        return curTrackName==null?" ":curTrackName;
+    public Track getCurrentTrack(){
+        if(currentPlayList!=null)
+        return currentPlayList.getTracks().get(indexCurrentTrack);
+        else return new Track();
     }
-    @Override
-    protected void finalize() throws Throwable {
-        mediaPlayer.release();
-        super.finalize();
 
+    public static abstract class PlayerListener {
+        abstract public void onEoF(int position);
+        abstract public void onIsPausedChanged(boolean isPaused);
     }
 }

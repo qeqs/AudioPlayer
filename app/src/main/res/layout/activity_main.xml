@@ -24,30 +24,6 @@
         android:layout_alignParentEnd="true"
         app:backgroundTint="@android:color/holo_green_dark" />
 
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="143dp"
-        android:id="@+id/seekBar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        style="@style/Widget.AppCompat.SeekBar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="mini"
-        app:srcCompat="@android:drawable/ic_media_play"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp"
-        android:id="@+id/playButton"
-        app:backgroundTint="@android:color/holo_green_dark" />
-
     <TextView
         android:layout_height="wrap_content"
         android:id="@+id/trackInfo"
@@ -56,19 +32,6 @@
         android:layout_above="@+id/seekBar"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:text=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/menuButton"
-        android:layout_marginTop="101dp"
-        android:clickable="false"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/trackName" />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -82,6 +45,38 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/trackInfo">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarStyle="insideOverlay">
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+            <ListView
+                android:id="@+id/list_tracks"
+                android:layout_width="match_parent"
+                android:layout_height="323dp"
+                android:contextClickable="true"
+                android:background="@android:color/white"
+                android:choiceMode="singleChoice"
+                >
+            </ListView>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/prevButton"
         android:layout_width="wrap_content"
@@ -89,9 +84,33 @@
         android:clickable="true"
         app:fabSize="mini"
         app:srcCompat="@android:drawable/ic_media_previous"
-        android:layout_alignTop="@+id/playButton"
         app:backgroundTint="@android:color/holo_green_dark"
+        android:layout_alignTop="@+id/playButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_media_play"
+        android:layout_marginBottom="13dp"
+        android:id="@+id/playButton"
+        app:backgroundTint="@android:color/holo_green_dark"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="41dp"
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_above="@+id/nextButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

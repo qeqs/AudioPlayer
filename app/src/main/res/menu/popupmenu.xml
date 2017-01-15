@@ -3,11 +3,14 @@
 
     <group android:id="@+id/menugroup1" >
         <item
-            android:id="@+id/menu1"
-            android:title="Popup menu item 1"/>
+            android:id="@+id/menuTrackList"
+            android:title="Playlists"/>
         <item
             android:id="@+id/menuAbout"
             android:title="About application"/>
+        <item
+            android:id="@+id/menuRefresh"
+            android:title="Refresh"/>
 
     </group>
 
