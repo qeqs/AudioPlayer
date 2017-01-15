@@ -16,6 +16,8 @@ public class Track {
     @ForeignCollectionField(eager = true)
     private ForeignCollection<TrackPlayList> trackLists;
 
+    private boolean selected = false;
+
     public int getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class Track {
 
     public void setTrackLists(ForeignCollection trackLists) {
         this.trackLists = trackLists;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

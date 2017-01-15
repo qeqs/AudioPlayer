@@ -10,13 +10,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SeekBar;
@@ -50,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton prevButton;
     FloatingActionButton menuButton;
     SeekBar bar;
-    TextView name;
     MyTimer timer;
     ListView listView;
+    MyAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,22 +122,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                for (int j = 0; j < parent.getChildCount(); j++)
-                    parent.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
-
+//                for (int j = 0; j < parent.getChildCount(); j++)
+//                    parent.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+//                index = position;
                 // change the background color of the selected element
-                view.setBackgroundColor(Color.LTGRAY);
+                //view.setSelected(true);
+               // selectedView = view;
+                adapter.setSelectedIndex(position);
+              // view.setBackgroundColor(Color.LTGRAY);
                 player.play(position);
             }
         });
+
         player.addListener(new MusicPlayer.PlayerListener() {
             @Override
             public void onEoF(int position) {
-                for (int j = 0; j < listView.getChildCount(); j++)
-                    listView.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
 
                 // change the background color of the selected element
-                listView.getChildAt(position).setBackgroundColor(Color.LTGRAY);
+                listView.smoothScrollToPosition(position);
+                adapter.setSelectedIndex(position);
             }
 
             @Override
@@ -249,8 +257,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setTrackList(PlayList list){
-        ArrayAdapter<Track> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, list.getTracks());
+       // ArrayAdapter<Track> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, list.getTracks());
+        adapter = new MyAdapter(this,list.getTracks());
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -358,5 +366,78 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public class MyAdapter extends BaseAdapter{
+        private Context context;
+        private ArrayList<Track> testList;
+        private int selectedIndex;
+        private int selectedColor = Color.parseColor("#FFFFFF");
+
+        public MyAdapter(Context ctx, ArrayList<Track> testList)
+        {
+            this.context = ctx;
+            this.testList = testList;
+            selectedIndex = -1;
+        }
+
+        public void setSelectedIndex(int ind)
+        {
+            selectedIndex = ind;
+            notifyDataSetChanged();
+        }
+        @Override
+        public int getCount()
+        {
+            return testList.size();
+        }
+
+        @Override
+        public Object getItem(int position)
+        {
+            return testList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        private class ViewHolder
+        {
+            TextView tv;
+        }
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent)
+            {
+                View vi = convertView;
+                ViewHolder holder;
+                if(convertView == null)
+                {
+                    vi = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, null);
+                    holder = new ViewHolder();
+
+                    holder.tv = (TextView) vi;
+
+                    vi.setTag(holder);
+                }
+                else
+                {
+                    holder = (ViewHolder) vi.getTag();
+                }
+
+                if(selectedIndex!= -1 && position == selectedIndex)
+                {
+                    holder.tv.setBackgroundColor(Color.LTGRAY);
+                }
+                else
+                {
+                    holder.tv.setBackgroundColor(selectedColor);
+                }
+                holder.tv.setText("" + (position + 1) + " " + testList.get(position).getName());
+
+                return vi;
+            }
+        }
+
 
 }

@@ -66,12 +66,13 @@ public class MusicPlayer {
     public void play(Integer i) {
 
         indexCurrentTrack = i;
+        if (currentPlayList == null) return;
         if (currentPlayList.getTracks().size() == 0) return;
         if (currentPlayList.getTracks().size() <= i) i = 0;
         if (i < 0) i = currentPlayList.getTracks().size() - 1;
 
         try {
-            createPlayer(context,currentPlayList.getTracks().get(i).getPath());
+            createPlayer(context, currentPlayList.getTracks().get(i).getPath());
             player.start();
             setPaused(false);
 
